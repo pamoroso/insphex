@@ -51,6 +51,7 @@ See the [list of releases](https://github.com/pamoroso/insphex/releases) for not
 
 ## Learn more
 
+- [Insphex project updates](https://journal.paoloamoroso.com/tag:insphex)
 - [hex dump](https://en.wikipedia.org/wiki/Hex_dump)
 - [Medley Interlisp](https://interlisp.org)
 
