@@ -1,14 +1,12 @@
 (DEFINE-FILE-INFO PACKAGE (DEFPACKAGE "INSPHEX" (USE "LISP" "XCL")) READTABLE "XCL" BASE 10)
 
-(IL:FILECREATED "20-May-2024 08:39:14" IL:|{DSK}<home>medley>il>utils>INSPHEX.;29| 9226   
+(IL:FILECREATED "20-May-2024 10:46:29" IL:|{DSK}<home>medley>il>utils>INSPHEX.;31| 9230   
 
       :EDIT-BY "PA"
 
-      :CHANGES-TO (IL:FUNCTIONS CREATE-HEX-WINDOW HANDLE-MENU QUIT-HEX-WINDOW RESET-HEX-WINDOW 
-                         DEACTIVATE-HEX-WINDOW)
-                  (IL:VARS IL:INSPHEXCOMS)
+      :CHANGES-TO (IL:FUNCTIONS PRINT-HEXDUMP PRINT-HEX-BLOCK)
 
-      :PREVIOUS-DATE "20-May-2024 08:14:33" IL:|{DSK}<home>medley>il>utils>INSPHEX.;28|)
+      :PREVIOUS-DATE "20-May-2024 08:39:14" IL:|{DSK}<home>medley>il>utils>INSPHEX.;29|)
 
 
 (IL:PRETTYCOMPRINT IL:INSPHEXCOMS)
@@ -123,35 +121,36 @@
              (IL:TEDIT.STREAMCHANGEDP OUTSTREAM T))))
 
 (DEFUN PRINT-HEX-BLOCK (IN OFFSET &OPTIONAL (OUT *STANDARD-OUTPUT*))
-                                                       (IL:* IL:\; "Edited 20-May-2024 08:13 by PA")
+                                                       (IL:* IL:\; "Edited 20-May-2024 10:21 by PA")
                                                        (IL:* IL:\; "Edited  8-May-2024 12:29 by PA")
                                                        (IL:* IL:\; "Edited  4-May-2024 08:59 by PA")
                                                        (IL:* IL:\; "Edited  2-May-2024 09:24 by PA")
                                                        (IL:* IL:\; "Edited  1-May-2024 08:42 by PA")
    "Read a block of bytes from IN at OFFSET and print them in hex to OUT.
 Returns NIL if no more bytes are available for reading, the last read byte otherwise."
-
-   (IL:* IL:|;;| "Print block offset from beginning of file")
-
-   (FORMAT OUT "~&~8,'0X  " OFFSET)
    (LET (BYTE BLOCK)
         (DOTIMES (I 16)
-            (IF (SETF BYTE (READ-BYTE IN NIL))
-                (PROGN (PUSH BYTE BLOCK)
-                       (FORMAT OUT "~2,'0X~A" BYTE (IF (= I 7)
-                                                       "  "
-                                                       " ")))
-                (RETURN)))
+            (SETF BYTE (READ-BYTE IN NIL))
+            (WHEN (AND BYTE (ZEROP I))
+                  (FORMAT OUT "~&~8,'0X  " OFFSET))
+            (COND
+               (BYTE (PUSH BYTE BLOCK)
+                     (FORMAT OUT "~2,'0X~A" BYTE (IF (= I 7)
+                                                     "  "
+                                                     " ")))
+               (T (RETURN))))
         (SETF BLOCK (NREVERSE BLOCK))
-        (FORMAT OUT "~60T~{~C~}~%" (MAPCAR #'CODE-TO-ASCII BLOCK))
+        (WHEN BLOCK
+            (FORMAT OUT "~60T~{~C~}~%" (MAPCAR #'CODE-TO-ASCII BLOCK)))
         BYTE))
 
-(DEFUN PRINT-HEXDUMP (FILE)                            (IL:* IL:\; "Edited 10-May-2024 04:40 by PA")
+(DEFUN PRINT-HEXDUMP (FILE)                            (IL:* IL:\; "Edited 20-May-2024 10:43 by PA")
+                                                       (IL:* IL:\; "Edited 10-May-2024 04:40 by PA")
    "Print to standard output the contents of FILE in hex and ASCII."
    (WITH-OPEN-FILE (IN FILE :DIRECTION :INPUT :ELEMENT-TYPE '(UNSIGNED-BYTE 8)
                        :IF-DOES-NOT-EXIST NIL)
           (DO* ((OFFSET 0 (+ OFFSET 16))
-                (MORE-BYTES-P T (PRINT-HEX-BLOCK IN OFFSET)
+                (MORE-BYTES-P (PRINT-HEX-BLOCK IN OFFSET)
                        (PRINT-HEX-BLOCK IN OFFSET)))
                ((NOT MORE-BYTES-P)
                 T))))
@@ -173,9 +172,9 @@ Returns NIL if no more bytes are available for reading, the last read byte other
 
 (DEFINE-RECORD MENU IL:MENU)
 (IL:DECLARE\: IL:DONTCOPY
-  (IL:FILEMAP (NIL (1250 1522 (CLEAR-HEX-WINDOW 1250 . 1522)) (1524 1784 (CODE-TO-ASCII 1524 . 1784)) (
-1786 3238 (CREATE-HEX-WINDOW 1786 . 3238)) (3240 3660 (DEACTIVATE-HEX-WINDOW 3240 . 3660)) (3662 4287 
-(HANDLE-MENU 3662 . 4287)) (4289 5179 (HEXDUMP 4289 . 5179)) (5181 6420 (NEXT-HEX-PAGE 5181 . 6420)) (
-6422 7769 (PRINT-HEX-BLOCK 6422 . 7769)) (7771 8297 (PRINT-HEXDUMP 7771 . 8297)) (8299 8654 (
-QUIT-HEX-WINDOW 8299 . 8654)) (8656 9163 (RESET-HEX-WINDOW 8656 . 9163)))))
+  (IL:FILEMAP (NIL (1126 1398 (CLEAR-HEX-WINDOW 1126 . 1398)) (1400 1660 (CODE-TO-ASCII 1400 . 1660)) (
+1662 3114 (CREATE-HEX-WINDOW 1662 . 3114)) (3116 3536 (DEACTIVATE-HEX-WINDOW 3116 . 3536)) (3538 4163 
+(HANDLE-MENU 3538 . 4163)) (4165 5055 (HEXDUMP 4165 . 5055)) (5057 6296 (NEXT-HEX-PAGE 5057 . 6296)) (
+6298 7666 (PRINT-HEX-BLOCK 6298 . 7666)) (7668 8301 (PRINT-HEXDUMP 7668 . 8301)) (8303 8658 (
+QUIT-HEX-WINDOW 8303 . 8658)) (8660 9167 (RESET-HEX-WINDOW 8660 . 9167)))))
 IL:STOP
