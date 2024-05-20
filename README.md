@@ -36,12 +36,16 @@ Once Insphex is loaded you can call the following functions and commands.
 To run the program evaluate:
 
 ```lisp
-(INSPHEX:HEXDUMP FILENAME)
+(INSPHEX:HEXDUMP FILENAME &OPTIONAL NEW-WIN-P)
 ```
 
-where `FILENAME` is a file name. The function `INSHPEX` is exported from package `INSPHEX` with nickname `HX`.
+where `FILENAME` is a file name. The function `INSHPEX` is exported from package `INSPHEX` nicknamed `HX`.
 
-The output goes to `*standard-output*`.
+The output goes to `*STANDARD-OUTPUT*` unless the optional argument `NEW-WIN-P` is non `NIL`, in which case the program displays the hex dump in a separate window. The window has a menu with the following commands:
+
+* `Next`: displays the next page of output
+* `Reread`: redisplays the input file from the beginning
+* `Exit`: quits the program.
 
 
 ## Release history
