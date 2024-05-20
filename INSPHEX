@@ -1,12 +1,14 @@
 (DEFINE-FILE-INFO PACKAGE (DEFPACKAGE "INSPHEX" (USE "LISP" "XCL")) READTABLE "XCL" BASE 10)
 
-(IL:FILECREATED "18-May-2024 12:38:15" IL:|{DSK}<home>medley>il>utils>INSPHEX.;23| 6687   
+(IL:FILECREATED "20-May-2024 08:39:14" IL:|{DSK}<home>medley>il>utils>INSPHEX.;29| 9226   
 
       :EDIT-BY "PA"
 
-      :CHANGES-TO (IL:FUNCTIONS HANDLE-MENU)
+      :CHANGES-TO (IL:FUNCTIONS CREATE-HEX-WINDOW HANDLE-MENU QUIT-HEX-WINDOW RESET-HEX-WINDOW 
+                         DEACTIVATE-HEX-WINDOW)
+                  (IL:VARS IL:INSPHEXCOMS)
 
-      :PREVIOUS-DATE "18-May-2024 09:43:49" IL:|{DSK}<home>medley>il>utils>INSPHEX.;22|)
+      :PREVIOUS-DATE "20-May-2024 08:14:33" IL:|{DSK}<home>medley>il>utils>INSPHEX.;28|)
 
 
 (IL:PRETTYCOMPRINT IL:INSPHEXCOMS)
@@ -16,8 +18,9 @@
            (IL:P (DEFPACKAGE "INSPHEX" (:USE "LISP" "XCL")
                         (:NICKNAMES "HX")
                         (:EXPORT HEXDUMP)))
-           (IL:FUNCTIONS CLEAR-HEX-WINDOW CODE-TO-ASCII CREATE-HEX-WINDOW HANDLE-MENU HEXDUMP 
-                  PRINT-HEX-BLOCK PRINT-HEXDUMP QUIT-HEX-WINDOW RESET-HEX-WINDOW)
+           (IL:FUNCTIONS CLEAR-HEX-WINDOW CODE-TO-ASCII CREATE-HEX-WINDOW DEACTIVATE-HEX-WINDOW 
+                  HANDLE-MENU HEXDUMP NEXT-HEX-PAGE PRINT-HEX-BLOCK PRINT-HEXDUMP QUIT-HEX-WINDOW 
+                  RESET-HEX-WINDOW)
            (IL:STRUCTURES MENU)))
 
 (DEFINE-FILE-ENVIRONMENT IL:INSPHEX :PACKAGE (DEFPACKAGE "INSPHEX" (:USE "LISP" "XCL"))
@@ -40,11 +43,13 @@
        #\.
        (CODE-CHAR CODE)))
 
-(DEFUN CREATE-HEX-WINDOW (FILE)                        (IL:* IL:\; "Edited 18-May-2024 09:40 by PA")
+(DEFUN CREATE-HEX-WINDOW (FILE)                        (IL:* IL:\; "Edited 20-May-2024 08:37 by PA")
+                                                       (IL:* IL:\; "Edited 18-May-2024 09:40 by PA")
                                                        (IL:* IL:\; "Edited 12-May-2024 06:04 by PA")
    "Create and return a window to display the hex dump of FILE."
    (LET* ((IN (OPEN FILE :DIRECTION :INPUT :ELEMENT-TYPE '(UNSIGNED-BYTE 8)))
-          (COMMANDS (IL:MENUWINDOW (MAKE-MENU :ITEMS '(("Next" :NEXT "Show next page.")
+          (COMMANDS (IL:MENUWINDOW (MAKE-MENU :ITEMS '(("Next" :NEXT "Show the next page.")
+                                                       ("Reread" :REREAD "Reread the input file.")
                                                        ("Exit" :EXIT "Quit the program."))
                                           :MENUFONT
                                           '(IL:MODERN 12)
@@ -58,9 +63,19 @@
          (IL:WINDOWPROP WINDOW 'OUTSTREAM OUT)
          (IL:WINDOWPROP WINDOW 'BLOCK-OFFSET 0)
          (IL:WINDOWPROP WINDOW 'IL:TITLE (FORMAT NIL "Insphex ~A" FILE))
+         (NEXT-HEX-PAGE WINDOW)
          WINDOW))
 
-(DEFUN HANDLE-MENU (ITEM MENU KEY)                     (IL:* IL:\; "Edited 18-May-2024 12:36 by PA")
+(DEFUN DEACTIVATE-HEX-WINDOW (WINDOW)                  (IL:* IL:\; "Edited 20-May-2024 08:27 by PA")
+   "Clean up allocated resources in WINWOW."
+   (LET ((INSTREAM (IL:WINDOWPROP WINDOW 'INSTREAM)))
+        (WHEN (AND (STREAMP INSTREAM)
+                   (OPEN-STREAM-P INSTREAM))
+              (CLOSE INSTREAM))
+        (IL:WINDOWPROP WINDOW 'INSTREAM NIL)
+        (IL:WINDOWPROP WINDOW 'BLOCK-OFFSET 0)))
+
+(DEFUN HANDLE-MENU (ITEM MENU KEY)                     (IL:* IL:\; "Edited 20-May-2024 08:36 by PA")
    "Handle hex window menu selection."
    (LET* ((MENU-WINDOW (IL:WFROMMENU MENU))
           (HEX-WINDOW (IL:MAINWINDOW MENU-WINDOW))
@@ -68,7 +83,10 @@
          (IF (MEMBER KEY '(IL:MIDDLE IL:RIGHT))
              NIL
              (ECASE COMMAND
-                 (:NEXT :NEXT)
+                 (:NEXT (NEXT-HEX-PAGE HEX-WINDOW))
+                 (:REREAD 
+                    (RESET-HEX-WINDOW HEX-WINDOW)
+                    (NEXT-HEX-PAGE HEX-WINDOW))
                  (:EXIT (QUIT-HEX-WINDOW HEX-WINDOW))))))
 
 (DEFUN HEXDUMP (FILE &OPTIONAL NEWIN-P)                (IL:* IL:\; "Edited 11-May-2024 09:34 by PA")
@@ -84,7 +102,28 @@
       (NEWIN-P (CREATE-HEX-WINDOW FILE))
       (T (PRINT-HEXDUMP FILE))))
 
+(DEFUN NEXT-HEX-PAGE (WINDOW)                          (IL:* IL:\; "Edited 20-May-2024 08:07 by PA")
+   "Display in WINDOW the next page of the hex dump."
+   (LET* ((INSTREAM (IL:WINDOWPROP WINDOW 'INSTREAM))
+          (OUTSTREAM (IL:WINDOWPROP WINDOW 'OUTSTREAM))
+          MORE-BYTES-P PAGE)
+         (SETF PAGE (WITH-OUTPUT-TO-STRING (STREAM)
+                           (DOTIMES (I 32)
+                               (SETF MORE-BYTES-P (PRINT-HEX-BLOCK INSTREAM (IL:WINDOWPROP
+                                                                             WINDOW
+                                                                             'BLOCK-OFFSET)
+                                                         STREAM))
+                               (IL:WINDOWPROP WINDOW 'BLOCK-OFFSET (+ (IL:WINDOWPROP WINDOW
+                                                                             'BLOCK-OFFSET)
+                                                                      16))
+                               (UNLESS MORE-BYTES-P (RETURN)))))
+         (UNLESS (STRING= PAGE "")
+             (CLEAR-HEX-WINDOW WINDOW)
+             (IL:TEDIT.INSERT OUTSTREAM PAGE)
+             (IL:TEDIT.STREAMCHANGEDP OUTSTREAM T))))
+
 (DEFUN PRINT-HEX-BLOCK (IN OFFSET &OPTIONAL (OUT *STANDARD-OUTPUT*))
+                                                       (IL:* IL:\; "Edited 20-May-2024 08:13 by PA")
                                                        (IL:* IL:\; "Edited  8-May-2024 12:29 by PA")
                                                        (IL:* IL:\; "Edited  4-May-2024 08:59 by PA")
                                                        (IL:* IL:\; "Edited  2-May-2024 09:24 by PA")
@@ -117,24 +156,26 @@ Returns NIL if no more bytes are available for reading, the last read byte other
                ((NOT MORE-BYTES-P)
                 T))))
 
-(DEFUN QUIT-HEX-WINDOW (WINDOW)                        (IL:* IL:\; "Edited 13-May-2024 08:54 by PA")
+(DEFUN QUIT-HEX-WINDOW (WINDOW)                        (IL:* IL:\; "Edited 20-May-2024 08:28 by PA")
+                                                       (IL:* IL:\; "Edited 13-May-2024 08:54 by PA")
    "Close and terminate hex dump WINDOW."
-   (RESET-HEX-WINDOW WINDOW)
+   (DEACTIVATE-HEX-WINDOW WINDOW)
    (IL:TEDIT.QUIT (IL:WINDOWPROP WINDOW 'OUTSTREAM)))
 
-(DEFUN RESET-HEX-WINDOW (WINDOW)                       (IL:* IL:\; "Edited 12-May-2024 06:11 by PA")
-   "Free any allocated resources of hex dump WINDOW in preparation for shutdown."
+(DEFUN RESET-HEX-WINDOW (WINDOW)                       (IL:* IL:\; "Edited 20-May-2024 08:31 by PA")
+                                                       (IL:* IL:\; "Edited 12-May-2024 06:11 by PA")
+   "Reinitialize program state for rereading input file."
    (LET ((INSTREAM (IL:WINDOWPROP WINDOW 'INSTREAM)))
         (WHEN (AND (STREAMP INSTREAM)
                    (OPEN-STREAM-P INSTREAM))
-              (CLOSE INSTREAM))
-        (IL:WINDOWPROP WINDOW 'INSTREAM NIL)
+              (FILE-POSITION INSTREAM 0))
         (IL:WINDOWPROP WINDOW 'BLOCK-OFFSET 0)))
 
 (DEFINE-RECORD MENU IL:MENU)
 (IL:DECLARE\: IL:DONTCOPY
-  (IL:FILEMAP (NIL (1053 1325 (CLEAR-HEX-WINDOW 1053 . 1325)) (1327 1587 (CODE-TO-ASCII 1327 . 1587)) (
-1589 2793 (CREATE-HEX-WINDOW 1589 . 2793)) (2795 3262 (HANDLE-MENU 2795 . 3262)) (3264 4154 (HEXDUMP 
-3264 . 4154)) (4156 5394 (PRINT-HEX-BLOCK 4156 . 5394)) (5396 5922 (PRINT-HEXDUMP 5396 . 5922)) (5924 
-6165 (QUIT-HEX-WINDOW 5924 . 6165)) (6167 6624 (RESET-HEX-WINDOW 6167 . 6624)))))
+  (IL:FILEMAP (NIL (1250 1522 (CLEAR-HEX-WINDOW 1250 . 1522)) (1524 1784 (CODE-TO-ASCII 1524 . 1784)) (
+1786 3238 (CREATE-HEX-WINDOW 1786 . 3238)) (3240 3660 (DEACTIVATE-HEX-WINDOW 3240 . 3660)) (3662 4287 
+(HANDLE-MENU 3662 . 4287)) (4289 5179 (HEXDUMP 4289 . 5179)) (5181 6420 (NEXT-HEX-PAGE 5181 . 6420)) (
+6422 7769 (PRINT-HEX-BLOCK 6422 . 7769)) (7771 8297 (PRINT-HEXDUMP 7771 . 8297)) (8299 8654 (
+QUIT-HEX-WINDOW 8299 . 8654)) (8656 9163 (RESET-HEX-WINDOW 8656 . 9163)))))
 IL:STOP
