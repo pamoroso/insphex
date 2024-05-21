@@ -2,7 +2,13 @@
 
 Insphex is a hex dump tool that shows the contents of files as a list of hexadecimal values and the correspnding ASCII characters. The program is written in Common Lisp and Interlisp, runs on the [Medley Interlisp](https://interlisp.org) environment, and is similar to the Linux tool `hexdump`.
 
-![Insphex output window](https://raw.githubusercontent.com/pamoroso/insphex/main/insphex.png)
+The output can go to a window with a menu of commands, like this:
+
+![Insphex output window](https://raw.githubusercontent.com/pamoroso/insphex/main/insphex1.png)
+
+or to the standard output:
+
+![Insphex output window](https://raw.githubusercontent.com/pamoroso/insphex/main/insphex2.png)
 
 
 ## Installation
