@@ -1,12 +1,12 @@
 (DEFINE-FILE-INFO PACKAGE (DEFPACKAGE "INSPHEX" (USE "LISP" "XCL")) READTABLE "XCL" BASE 10)
 
-(IL:FILECREATED "31-May-2024 10:35:45" IL:|{DSK}<home>medley>il>utils>INSPHEX.;32| 9480   
+(IL:FILECREATED " 2-Jun-2024 09:51:38" IL:|{DSK}<home>medley>il>utils>INSPHEX.;33| 9946   
 
       :EDIT-BY "PA"
 
-      :CHANGES-TO (IL:FUNCTIONS NEXT-HEX-PAGE)
+      :CHANGES-TO (IL:FUNCTIONS CREATE-HEX-WINDOW QUIT-HEX-WINDOW)
 
-      :PREVIOUS-DATE "20-May-2024 10:46:29" IL:|{DSK}<home>medley>il>utils>INSPHEX.;31|)
+      :PREVIOUS-DATE "31-May-2024 10:35:45" IL:|{DSK}<home>medley>il>utils>INSPHEX.;32|)
 
 
 (IL:PRETTYCOMPRINT IL:INSPHEXCOMS)
@@ -41,7 +41,8 @@
        #\.
        (CODE-CHAR CODE)))
 
-(DEFUN CREATE-HEX-WINDOW (FILE)                        (IL:* IL:\; "Edited 20-May-2024 08:37 by PA")
+(DEFUN CREATE-HEX-WINDOW (FILE)                        (IL:* IL:\; "Edited  2-Jun-2024 09:44 by PA")
+                                                       (IL:* IL:\; "Edited 20-May-2024 08:37 by PA")
                                                        (IL:* IL:\; "Edited 18-May-2024 09:40 by PA")
                                                        (IL:* IL:\; "Edited 12-May-2024 06:04 by PA")
    "Create and return a window to display the hex dump of FILE."
@@ -54,13 +55,14 @@
                                           :TITLE "Commands" :CENTERFLG T :WHENSELECTEDFN 
                                           #'HANDLE-MENU)))
           (OUT (IL:OPENTEXTSTREAM))
-          (TEDIT-PROC (IL:TEDIT OUT))
+          (TEDIT-PROC (IL:TEDIT OUT NIL NIL '(IL:QUITFN #'QUIT-HEX-WINDOW)))
           (WINDOW (IL:WFROMDS OUT)))
          (IL:ATTACHWINDOW COMMANDS WINDOW 'IL:TOP 'IL:LEFT)
          (IL:WINDOWPROP WINDOW 'INSTREAM IN)
          (IL:WINDOWPROP WINDOW 'OUTSTREAM OUT)
          (IL:WINDOWPROP WINDOW 'BLOCK-OFFSET 0)
          (IL:WINDOWPROP WINDOW 'IL:TITLE (FORMAT NIL "Insphex ~A" FILE))
+         (IL:WINDOWADDPROP WINDOW 'IL:CLOSEFN #'DEACTIVATE-HEX-WINDOW)
          (NEXT-HEX-PAGE WINDOW)
          WINDOW))
 
@@ -159,8 +161,11 @@ Returns NIL if no more bytes are available for reading, the last read byte other
                ((NOT MORE-BYTES-P)
                 T))))
 
-(DEFUN QUIT-HEX-WINDOW (WINDOW)                        (IL:* IL:\; "Edited 20-May-2024 08:28 by PA")
+(DEFUN QUIT-HEX-WINDOW (WINDOW &OPTIONAL TEXTSTREAM TEXTOBJ DUMMY)
+                                                       (IL:* IL:\; "Edited  2-Jun-2024 09:50 by PA")
+                                                       (IL:* IL:\; "Edited 20-May-2024 08:28 by PA")
                                                        (IL:* IL:\; "Edited 13-May-2024 08:54 by PA")
+   (DECLARE (IGNORE TEXTSTREAM TEXTOBJ DUMMY))
    "Close and terminate hex dump WINDOW."
    (DEACTIVATE-HEX-WINDOW WINDOW)
    (IL:TEDIT.QUIT (IL:WINDOWPROP WINDOW 'OUTSTREAM)))
@@ -176,9 +181,9 @@ Returns NIL if no more bytes are available for reading, the last read byte other
 
 (DEFINE-RECORD MENU IL:MENU)
 (IL:DECLARE\: IL:DONTCOPY
-  (IL:FILEMAP (NIL (1110 1382 (CLEAR-HEX-WINDOW 1110 . 1382)) (1384 1644 (CODE-TO-ASCII 1384 . 1644)) (
-1646 3098 (CREATE-HEX-WINDOW 1646 . 3098)) (3100 3520 (DEACTIVATE-HEX-WINDOW 3100 . 3520)) (3522 4147 
-(HANDLE-MENU 3522 . 4147)) (4149 5039 (HEXDUMP 4149 . 5039)) (5041 6546 (NEXT-HEX-PAGE 5041 . 6546)) (
-6548 7916 (PRINT-HEX-BLOCK 6548 . 7916)) (7918 8551 (PRINT-HEXDUMP 7918 . 8551)) (8553 8908 (
-QUIT-HEX-WINDOW 8553 . 8908)) (8910 9417 (RESET-HEX-WINDOW 8910 . 9417)))))
+  (IL:FILEMAP (NIL (1130 1402 (CLEAR-HEX-WINDOW 1130 . 1402)) (1404 1664 (CODE-TO-ASCII 1404 . 1664)) (
+1666 3337 (CREATE-HEX-WINDOW 1666 . 3337)) (3339 3759 (DEACTIVATE-HEX-WINDOW 3339 . 3759)) (3761 4386 
+(HANDLE-MENU 3761 . 4386)) (4388 5278 (HEXDUMP 4388 . 5278)) (5280 6785 (NEXT-HEX-PAGE 5280 . 6785)) (
+6787 8155 (PRINT-HEX-BLOCK 6787 . 8155)) (8157 8790 (PRINT-HEXDUMP 8157 . 8790)) (8792 9374 (
+QUIT-HEX-WINDOW 8792 . 9374)) (9376 9883 (RESET-HEX-WINDOW 9376 . 9883)))))
 IL:STOP
