@@ -42,16 +42,25 @@ Once Insphex is loaded you can call the following functions and commands.
 To run the program evaluate:
 
 ```lisp
-(INSPHEX:HEXDUMP FILENAME &OPTIONAL NEW-WIN-P)
+(INSPHEX:HEXDUMP FILENAME &OPTIONAL NEWIN-P)
 ```
 
 where `FILENAME` is a file name. The function `INSHPEX` is exported from package `INSPHEX` nicknamed `HX`.
 
-The output goes to `*STANDARD-OUTPUT*` unless the optional argument `NEW-WIN-P` is non `NIL`, in which case the program displays the hex dump in a separate window. The window has a menu with the following commands:
+The output goes to `*STANDARD-OUTPUT*` unless the optional argument `NEWIN-P` is non `NIL`, in which case the program displays the hex dump in a separate window. The window has a menu with the following commands:
 
 * `Next`: displays the next page of output
 * `Reread`: redisplays the input file from the beginning
 * `Exit`: quits the program.
+
+
+### `HD`
+
+The Executive command `HD` works the same way as the function `INSPHEX:HEXDUMP` and accepts the same arguments:
+
+```
+HD FILENAME [NEWIN-P]
+```
 
 
 ## Release history
