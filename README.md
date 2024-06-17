@@ -63,6 +63,11 @@ HD FILENAME [NEWIN-P]
 ```
 
 
+### File Browser support
+
+Insphex adds to the File Browser the `Hexdump` command that shows in separate windows the hex dump of the selected files.
+
+
 ## Release history
 
 See the [list of releases](https://github.com/pamoroso/insphex/releases) for notes on the changes in each version.
