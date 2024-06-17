@@ -1,13 +1,12 @@
 (DEFINE-FILE-INFO PACKAGE (DEFPACKAGE "INSPHEX" (USE "LISP" "XCL")) READTABLE "XCL" BASE 10)
 
-(IL:FILECREATED " 4-Jun-2024 11:27:21" IL:|{DSK}<home>medley>il>utils>INSPHEX.;34| 10190  
+(IL:FILECREATED "17-Jun-2024 11:35:43" IL:|{DSK}<home>medley>il>utils>INSPHEX.;41| 11281  
 
       :EDIT-BY "PA"
 
-      :CHANGES-TO (IL:COMMANDS HD)
-                  (IL:VARS IL:INSPHEXCOMS)
+      :CHANGES-TO (IL:FUNCTIONS FB-HEXDUMP)
 
-      :PREVIOUS-DATE " 2-Jun-2024 09:51:38" IL:|{DSK}<home>medley>il>utils>INSPHEX.;33|)
+      :PREVIOUS-DATE "17-Jun-2024 10:44:53" IL:|{DSK}<home>medley>il>utils>INSPHEX.;40|)
 
 
 (IL:PRETTYCOMPRINT IL:INSPHEXCOMS)
@@ -18,10 +17,12 @@
                         (:NICKNAMES "HX")
                         (:EXPORT HEXDUMP)))
            (IL:FUNCTIONS CLEAR-HEX-WINDOW CODE-TO-ASCII CREATE-HEX-WINDOW DEACTIVATE-HEX-WINDOW 
-                  HANDLE-MENU HEXDUMP NEXT-HEX-PAGE PRINT-HEX-BLOCK PRINT-HEXDUMP QUIT-HEX-WINDOW 
-                  RESET-HEX-WINDOW)
+                  FB-HEXDUMP HANDLE-MENU HEXDUMP NEXT-HEX-PAGE PRINT-HEX-BLOCK PRINT-HEXDUMP 
+                  QUIT-HEX-WINDOW RESET-HEX-WINDOW)
            (IL:STRUCTURES MENU)
-           (IL:COMMANDS HD)))
+           (IL:COMMANDS HD)
+           (IL:APPENDVARS (IL:FB.MENU.ITEMS (IL:|Hexdump| FB-HEXDUMP 
+                                                   "Shows the hex dump of the selected files.")))))
 
 (DEFINE-FILE-ENVIRONMENT IL:INSPHEX :PACKAGE (DEFPACKAGE "INSPHEX" (:USE "LISP" "XCL"))
    :READTABLE "XCL"
@@ -76,6 +77,22 @@
               (CLOSE INSTREAM))
         (IL:WINDOWPROP WINDOW 'INSTREAM NIL)
         (IL:WINDOWPROP WINDOW 'BLOCK-OFFSET 0)))
+
+(DEFUN FB-HEXDUMP (BROWSER KEY ITEM MENU ARG)          (IL:* IL:\; "Edited 17-Jun-2024 11:34 by PA")
+                                                       (IL:* IL:\; "Edited 16-Jun-2024 10:02 by PA")
+   (DECLARE (IGNORE MENU ARG))
+   "Show the hex dump of the files selected in the File Browser."
+   (LET* ((SELECTED (IL:FB.SELECTEDFILES BROWSER))
+          (FILES (IF (LISTP SELECTED)
+                     SELECTED
+                     (LIST SELECTED))))
+         (IL:FB.ALLOW.ABORT BROWSER)
+         (WHEN (AND (EQL KEY 'IL:LEFT)
+                    (STRING-EQUAL (SYMBOL-NAME (FIRST ITEM))
+                           (SYMBOL-NAME '|Hexdump|)))
+             (DOLIST (FILE FILES)
+                 (HEXDUMP (IL:FB.FETCHFILENAME FILE)
+                        T)))))
 
 (DEFUN HANDLE-MENU (ITEM MENU KEY)                     (IL:* IL:\; "Edited 20-May-2024 08:36 by PA")
    "Handle hex window menu selection."
@@ -185,10 +202,14 @@ Returns NIL if no more bytes are available for reading, the last read byte other
 
 (DEFCOMMAND (HD :EVAL) (XCL-USER::FILE &OPTIONAL (XCL-USER::NEWIN-P NIL)) (HEXDUMP XCL-USER::FILE 
                                                                                  XCL-USER::NEWIN-P))
+
+(IL:APPENDTOVAR IL:FB.MENU.ITEMS (IL:|Hexdump| FB-HEXDUMP "Shows the hex dump of the selected files."
+                                        ))
 (IL:DECLARE\: IL:DONTCOPY
-  (IL:FILEMAP (NIL (1169 1441 (CLEAR-HEX-WINDOW 1169 . 1441)) (1443 1703 (CODE-TO-ASCII 1443 . 1703)) (
-1705 3376 (CREATE-HEX-WINDOW 1705 . 3376)) (3378 3798 (DEACTIVATE-HEX-WINDOW 3378 . 3798)) (3800 4425 
-(HANDLE-MENU 3800 . 4425)) (4427 5317 (HEXDUMP 4427 . 5317)) (5319 6824 (NEXT-HEX-PAGE 5319 . 6824)) (
-6826 8194 (PRINT-HEX-BLOCK 6826 . 8194)) (8196 8829 (PRINT-HEXDUMP 8196 . 8829)) (8831 9413 (
-QUIT-HEX-WINDOW 8831 . 9413)) (9415 9922 (RESET-HEX-WINDOW 9415 . 9922)))))
+  (IL:FILEMAP (NIL (1314 1586 (CLEAR-HEX-WINDOW 1314 . 1586)) (1588 1848 (CODE-TO-ASCII 1588 . 1848)) (
+1850 3521 (CREATE-HEX-WINDOW 1850 . 3521)) (3523 3943 (DEACTIVATE-HEX-WINDOW 3523 . 3943)) (3945 4739 
+(FB-HEXDUMP 3945 . 4739)) (4741 5366 (HANDLE-MENU 4741 . 5366)) (5368 6258 (HEXDUMP 5368 . 6258)) (
+6260 7765 (NEXT-HEX-PAGE 6260 . 7765)) (7767 9135 (PRINT-HEX-BLOCK 7767 . 9135)) (9137 9770 (
+PRINT-HEXDUMP 9137 . 9770)) (9772 10354 (QUIT-HEX-WINDOW 9772 . 10354)) (10356 10863 (RESET-HEX-WINDOW
+ 10356 . 10863)))))
 IL:STOP
