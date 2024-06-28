@@ -54,12 +54,12 @@ The output goes to `*STANDARD-OUTPUT*` unless the optional argument `NEWIN-P` is
 * `Exit`: quits the program.
 
 
-### `HD`
+### `HEXDUMP` Exec command
 
-The Executive command `HD` works the same way as the function `INSPHEX:HEXDUMP` and accepts the same arguments:
+The Executive command `HEXDUMP` works the same way as the function `INSPHEX:HEXDUMP` and accepts the same arguments:
 
 ```
-HD FILENAME [NEWIN-P]
+HEXDUMP FILENAME [NEWIN-P]
 ```
 
 
