@@ -1,12 +1,13 @@
 (DEFINE-FILE-INFO PACKAGE (DEFPACKAGE "INSPHEX" (USE "LISP" "XCL")) READTABLE "XCL" BASE 10)
 
-(IL:FILECREATED "17-Jun-2024 11:35:43" IL:|{DSK}<home>medley>il>utils>INSPHEX.;41| 11281  
+(IL:FILECREATED "28-Jun-2024 01:58:30" IL:|{DSK}<home>medley>il>utils>INSPHEX.;42| 11597  
 
       :EDIT-BY "PA"
 
-      :CHANGES-TO (IL:FUNCTIONS FB-HEXDUMP)
+      :CHANGES-TO (IL:COMMANDS HEXDUMP)
+                  (IL:VARS IL:INSPHEXCOMS)
 
-      :PREVIOUS-DATE "17-Jun-2024 10:44:53" IL:|{DSK}<home>medley>il>utils>INSPHEX.;40|)
+      :PREVIOUS-DATE "17-Jun-2024 11:35:43" IL:|{DSK}<home>medley>il>utils>INSPHEX.;41|)
 
 
 (IL:PRETTYCOMPRINT IL:INSPHEXCOMS)
@@ -20,7 +21,7 @@
                   FB-HEXDUMP HANDLE-MENU HEXDUMP NEXT-HEX-PAGE PRINT-HEX-BLOCK PRINT-HEXDUMP 
                   QUIT-HEX-WINDOW RESET-HEX-WINDOW)
            (IL:STRUCTURES MENU)
-           (IL:COMMANDS HD)
+           (IL:COMMANDS HEXDUMP)
            (IL:APPENDVARS (IL:FB.MENU.ITEMS (IL:|Hexdump| FB-HEXDUMP 
                                                    "Shows the hex dump of the selected files.")))))
 
@@ -200,16 +201,19 @@ Returns NIL if no more bytes are available for reading, the last read byte other
 
 (DEFINE-RECORD MENU IL:MENU)
 
-(DEFCOMMAND (HD :EVAL) (XCL-USER::FILE &OPTIONAL (XCL-USER::NEWIN-P NIL)) (HEXDUMP XCL-USER::FILE 
-                                                                                 XCL-USER::NEWIN-P))
+(DEFCOMMAND (HEXDUMP :EVAL) (XCL-USER::FILE &OPTIONAL (XCL-USER::NEWIN-P NIL)) (HEXDUMP 
+                                                                                      XCL-USER::FILE
+                                                                                      
+                                                                                    XCL-USER::NEWIN-P
+                                                                                      ))
 
 (IL:APPENDTOVAR IL:FB.MENU.ITEMS (IL:|Hexdump| FB-HEXDUMP "Shows the hex dump of the selected files."
                                         ))
 (IL:DECLARE\: IL:DONTCOPY
-  (IL:FILEMAP (NIL (1314 1586 (CLEAR-HEX-WINDOW 1314 . 1586)) (1588 1848 (CODE-TO-ASCII 1588 . 1848)) (
-1850 3521 (CREATE-HEX-WINDOW 1850 . 3521)) (3523 3943 (DEACTIVATE-HEX-WINDOW 3523 . 3943)) (3945 4739 
-(FB-HEXDUMP 3945 . 4739)) (4741 5366 (HANDLE-MENU 4741 . 5366)) (5368 6258 (HEXDUMP 5368 . 6258)) (
-6260 7765 (NEXT-HEX-PAGE 6260 . 7765)) (7767 9135 (PRINT-HEX-BLOCK 7767 . 9135)) (9137 9770 (
-PRINT-HEXDUMP 9137 . 9770)) (9772 10354 (QUIT-HEX-WINDOW 9772 . 10354)) (10356 10863 (RESET-HEX-WINDOW
- 10356 . 10863)))))
+  (IL:FILEMAP (NIL (1358 1630 (CLEAR-HEX-WINDOW 1358 . 1630)) (1632 1892 (CODE-TO-ASCII 1632 . 1892)) (
+1894 3565 (CREATE-HEX-WINDOW 1894 . 3565)) (3567 3987 (DEACTIVATE-HEX-WINDOW 3567 . 3987)) (3989 4783 
+(FB-HEXDUMP 3989 . 4783)) (4785 5410 (HANDLE-MENU 4785 . 5410)) (5412 6302 (HEXDUMP 5412 . 6302)) (
+6304 7809 (NEXT-HEX-PAGE 6304 . 7809)) (7811 9179 (PRINT-HEX-BLOCK 7811 . 9179)) (9181 9814 (
+PRINT-HEXDUMP 9181 . 9814)) (9816 10398 (QUIT-HEX-WINDOW 9816 . 10398)) (10400 10907 (RESET-HEX-WINDOW
+ 10400 . 10907)))))
 IL:STOP
