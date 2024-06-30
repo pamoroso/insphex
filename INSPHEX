@@ -1,13 +1,12 @@
 (DEFINE-FILE-INFO PACKAGE (DEFPACKAGE "INSPHEX" (USE "LISP" "XCL")) READTABLE "XCL" BASE 10)
 
-(IL:FILECREATED "28-Jun-2024 01:58:30" IL:|{DSK}<home>medley>il>utils>INSPHEX.;42| 11597  
+(IL:FILECREATED "28-Jun-2024 10:40:25" IL:|{DSK}<home>matt>Interlisp>insphex>INSPHEX.;3| 13275  
 
-      :EDIT-BY "PA"
+      :EDIT-BY "mth"
 
-      :CHANGES-TO (IL:COMMANDS HEXDUMP)
-                  (IL:VARS IL:INSPHEXCOMS)
+      :CHANGES-TO (IL:VARS IL:INSPHEXCOMS)
 
-      :PREVIOUS-DATE "17-Jun-2024 11:35:43" IL:|{DSK}<home>medley>il>utils>INSPHEX.;41|)
+      :PREVIOUS-DATE "28-Jun-2024 01:58:30" IL:|{DSK}<home>matt>Interlisp>insphex>INSPHEX.;1|)
 
 
 (IL:PRETTYCOMPRINT IL:INSPHEXCOMS)
@@ -22,8 +21,26 @@
                   QUIT-HEX-WINDOW RESET-HEX-WINDOW)
            (IL:STRUCTURES MENU)
            (IL:COMMANDS HEXDUMP)
-           (IL:APPENDVARS (IL:FB.MENU.ITEMS (IL:|Hexdump| FB-HEXDUMP 
-                                                   "Shows the hex dump of the selected files.")))))
+           (IL:FILES (IL:SYSLOAD)
+                  IL:FILEBROWSER)
+           (IL:VARS FB-HEXDUMP-SEE-SUBITEM)
+           (IL:P (LET* ((FB.SEE.SUBITEMS (IL:ASSOC 'IL:SUBITEMS (IL:ASSOC 'IL:|See| IL:FB.MENU.ITEMS)
+                                                ))
+                        (HEXDUMP.ITEM (IL:SASSOC (CAR FB-HEXDUMP-SEE-SUBITEM)
+                                             FB.SEE.SUBITEMS)))
+                       
+                       (IL:* IL:|;;| 
+                     "The INSPHEX::FB-HEXDUMP-SEE-SUBITEM is copied below to avoid structure sharing")
+
+                       (IF HEXDUMP.ITEM
+                           (UNLESS (IL:EQUAL HEXDUMP.ITEM FB-HEXDUMP-SEE-SUBITEM)
+                               
+                               (IL:* IL:|;;| 
+                       "For updating: The only case this can't detect is changing the key (CAR item)")
+
+                               (IL:RPLNODE2 HEXDUMP.ITEM (IL:COPY FB-HEXDUMP-SEE-SUBITEM)))
+                           (RPLACD (LAST FB.SEE.SUBITEMS)
+                                  (LIST (IL:COPY FB-HEXDUMP-SEE-SUBITEM))))))))
 
 (DEFINE-FILE-ENVIRONMENT IL:INSPHEX :PACKAGE (DEFPACKAGE "INSPHEX" (:USE "LISP" "XCL"))
    :READTABLE "XCL"
@@ -207,13 +224,32 @@ Returns NIL if no more bytes are available for reading, the last read byte other
                                                                                     XCL-USER::NEWIN-P
                                                                                       ))
 
-(IL:APPENDTOVAR IL:FB.MENU.ITEMS (IL:|Hexdump| FB-HEXDUMP "Shows the hex dump of the selected files."
+(IL:FILESLOAD (IL:SYSLOAD)
+       IL:FILEBROWSER)
+
+(IL:RPAQQ FB-HEXDUMP-SEE-SUBITEM (IL:|Hexdump| FB-HEXDUMP "Shows the hex dump of the selected files."
                                         ))
+
+(LET* ((FB.SEE.SUBITEMS (IL:ASSOC 'IL:SUBITEMS (IL:ASSOC 'IL:|See| IL:FB.MENU.ITEMS)))
+       (HEXDUMP.ITEM (IL:SASSOC (CAR FB-HEXDUMP-SEE-SUBITEM)
+                            FB.SEE.SUBITEMS)))
+
+      (IL:* IL:|;;| "The INSPHEX::FB-HEXDUMP-SEE-SUBITEM is copied below to avoid structure sharing")
+
+      (IF HEXDUMP.ITEM
+          (UNLESS (IL:EQUAL HEXDUMP.ITEM FB-HEXDUMP-SEE-SUBITEM)
+
+              (IL:* IL:|;;| 
+              "For updating: The only case this can't detect is changing the key (CAR item)")
+
+              (IL:RPLNODE2 HEXDUMP.ITEM (IL:COPY FB-HEXDUMP-SEE-SUBITEM)))
+          (RPLACD (LAST FB.SEE.SUBITEMS)
+                 (LIST (IL:COPY FB-HEXDUMP-SEE-SUBITEM)))))
 (IL:DECLARE\: IL:DONTCOPY
-  (IL:FILEMAP (NIL (1358 1630 (CLEAR-HEX-WINDOW 1358 . 1630)) (1632 1892 (CODE-TO-ASCII 1632 . 1892)) (
-1894 3565 (CREATE-HEX-WINDOW 1894 . 3565)) (3567 3987 (DEACTIVATE-HEX-WINDOW 3567 . 3987)) (3989 4783 
-(FB-HEXDUMP 3989 . 4783)) (4785 5410 (HANDLE-MENU 4785 . 5410)) (5412 6302 (HEXDUMP 5412 . 6302)) (
-6304 7809 (NEXT-HEX-PAGE 6304 . 7809)) (7811 9179 (PRINT-HEX-BLOCK 7811 . 9179)) (9181 9814 (
-PRINT-HEXDUMP 9181 . 9814)) (9816 10398 (QUIT-HEX-WINDOW 9816 . 10398)) (10400 10907 (RESET-HEX-WINDOW
- 10400 . 10907)))))
+  (IL:FILEMAP (NIL (2284 2556 (CLEAR-HEX-WINDOW 2284 . 2556)) (2558 2818 (CODE-TO-ASCII 2558 . 2818)) (
+2820 4491 (CREATE-HEX-WINDOW 2820 . 4491)) (4493 4913 (DEACTIVATE-HEX-WINDOW 4493 . 4913)) (4915 5709 
+(FB-HEXDUMP 4915 . 5709)) (5711 6336 (HANDLE-MENU 5711 . 6336)) (6338 7228 (HEXDUMP 6338 . 7228)) (
+7230 8735 (NEXT-HEX-PAGE 7230 . 8735)) (8737 10105 (PRINT-HEX-BLOCK 8737 . 10105)) (10107 10740 (
+PRINT-HEXDUMP 10107 . 10740)) (10742 11324 (QUIT-HEX-WINDOW 10742 . 11324)) (11326 11833 (
+RESET-HEX-WINDOW 11326 . 11833)))))
 IL:STOP
