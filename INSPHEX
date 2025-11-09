@@ -1,12 +1,12 @@
 (DEFINE-FILE-INFO PACKAGE (DEFPACKAGE "INSPHEX" (USE "LISP" "XCL")) READTABLE "XCL" BASE 10)
 
-(IL:FILECREATED " 9-Nov-2025 13:50:30" IL:|{DSK}<home>paolo>il>insphex>INSPHEX.;4| 14129  
+(IL:FILECREATED " 9-Nov-2025 18:02:54" IL:|{DSK}<home>paolo>il>insphex>INSPHEX.;6| 14225  
 
       :EDIT-BY "PA"
 
-      :CHANGES-TO (IL:FUNCTIONS NEXT-HEX-PAGE)
+      :CHANGES-TO (IL:FUNCTIONS CREATE-HEX-WINDOW)
 
-      :PREVIOUS-DATE " 9-Nov-2025 10:46:29" IL:|{DSK}<home>paolo>il>insphex>INSPHEX.;2|)
+      :PREVIOUS-DATE " 9-Nov-2025 17:51:57" IL:|{DSK}<home>paolo>il>insphex>INSPHEX.;5|)
 
 
 (IL:PRETTYCOMPRINT IL:INSPHEXCOMS)
@@ -63,7 +63,7 @@
        (CODE-CHAR CODE)))
 
 (DEFUN CREATE-HEX-WINDOW (FILE &OPTIONAL (WINORNIL NIL))
-                                                       (IL:* IL:\; "Edited  9-Nov-2025 10:38 by PA")
+                                                       (IL:* IL:\; "Edited  9-Nov-2025 18:01 by PA")
                                                        (IL:* IL:\; "Edited  2-Jun-2024 09:44 by PA")
                                                        (IL:* IL:\; "Edited 20-May-2024 08:37 by PA")
                                                        (IL:* IL:\; "Edited 18-May-2024 09:40 by PA")
@@ -78,15 +78,18 @@
                                           :TITLE "Commands" :CENTERFLG T :WHENSELECTEDFN 
                                           #'HANDLE-MENU)))
           (OUT (IL:OPENTEXTSTREAM))
-          (TEDIT-PROC (IL:TEDIT OUT (IL:WINDOWP WINORNIL)
-                             NIL
-                             '(IL:QUITFN #'QUIT-HEX-WINDOW)))
-          (WINDOW (IL:WFROMDS OUT)))
+          (WINDOW (OR (IL:WINDOWP WINORNIL)
+                      (IL:CREATEW))))
+
+         (IL:* IL:|;;| 
+         "Set window title BEFORE calling TEdit otherwise the menu may end up detached from TEdit")
+
+         (IL:WINDOWPROP WINDOW 'IL:TITLE (FORMAT NIL "Insphex ~A" FILE))
+         (IL:TEDIT OUT WINDOW NIL '(IL:QUITFN #'QUIT-HEX-WINDOW))
          (IL:ATTACHWINDOW COMMANDS WINDOW 'IL:TOP 'IL:LEFT)
          (IL:WINDOWPROP WINDOW 'INSTREAM IN)
          (IL:WINDOWPROP WINDOW 'OUTSTREAM OUT)
          (IL:WINDOWPROP WINDOW 'BLOCK-OFFSET 0)
-         (IL:WINDOWPROP WINDOW 'IL:TITLE (FORMAT NIL "Insphex ~A" FILE))
          (IL:WINDOWADDPROP WINDOW 'IL:CLOSEFN #'DEACTIVATE-HEX-WINDOW)
          (NEXT-HEX-PAGE WINDOW)
          WINDOW))
@@ -258,10 +261,10 @@ Returns NIL if no more bytes are available for reading, the last read byte other
           (RPLACD (LAST FB.SEE.SUBITEMS)
                  (LIST (IL:COPY FB-HEXDUMP-SEE-SUBITEM)))))
 (IL:DECLARE\: IL:DONTCOPY
-  (IL:FILEMAP (NIL (2275 2547 (CLEAR-HEX-WINDOW 2275 . 2547)) (2549 2809 (CODE-TO-ASCII 2549 . 2809)) (
-2811 4812 (CREATE-HEX-WINDOW 2811 . 4812)) (4814 5234 (DEACTIVATE-HEX-WINDOW 4814 . 5234)) (5236 6030 
-(FB-HEXDUMP 5236 . 6030)) (6032 6657 (HANDLE-MENU 6032 . 6657)) (6659 7774 (HEXDUMP 6659 . 7774)) (
-7776 9589 (NEXT-HEX-PAGE 7776 . 9589)) (9591 10959 (PRINT-HEX-BLOCK 9591 . 10959)) (10961 11594 (
-PRINT-HEXDUMP 10961 . 11594)) (11596 12178 (QUIT-HEX-WINDOW 11596 . 12178)) (12180 12687 (
-RESET-HEX-WINDOW 12180 . 12687)))))
+  (IL:FILEMAP (NIL (2279 2551 (CLEAR-HEX-WINDOW 2279 . 2551)) (2553 2813 (CODE-TO-ASCII 2553 . 2813)) (
+2815 4908 (CREATE-HEX-WINDOW 2815 . 4908)) (4910 5330 (DEACTIVATE-HEX-WINDOW 4910 . 5330)) (5332 6126 
+(FB-HEXDUMP 5332 . 6126)) (6128 6753 (HANDLE-MENU 6128 . 6753)) (6755 7870 (HEXDUMP 6755 . 7870)) (
+7872 9685 (NEXT-HEX-PAGE 7872 . 9685)) (9687 11055 (PRINT-HEX-BLOCK 9687 . 11055)) (11057 11690 (
+PRINT-HEXDUMP 11057 . 11690)) (11692 12274 (QUIT-HEX-WINDOW 11692 . 12274)) (12276 12783 (
+RESET-HEX-WINDOW 12276 . 12783)))))
 IL:STOP
