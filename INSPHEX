@@ -1,12 +1,12 @@
 (DEFINE-FILE-INFO PACKAGE (DEFPACKAGE "INSPHEX" (USE "LISP" "XCL")) READTABLE "XCL" BASE 10)
 
-(IL:FILECREATED " 9-Nov-2025 10:46:29" IL:|{DSK}<home>paolo>il>insphex>INSPHEX.;2| 13833  
+(IL:FILECREATED " 9-Nov-2025 13:50:30" IL:|{DSK}<home>paolo>il>insphex>INSPHEX.;4| 14129  
 
       :EDIT-BY "PA"
 
-      :CHANGES-TO (IL:FUNCTIONS CREATE-HEX-WINDOW HEXDUMP)
+      :CHANGES-TO (IL:FUNCTIONS NEXT-HEX-PAGE)
 
-      :PREVIOUS-DATE "28-Jun-2024 10:40:25" IL:|{DSK}<home>paolo>il>insphex>INSPHEX.;1|)
+      :PREVIOUS-DATE " 9-Nov-2025 10:46:29" IL:|{DSK}<home>paolo>il>insphex>INSPHEX.;2|)
 
 
 (IL:PRETTYCOMPRINT IL:INSPHEXCOMS)
@@ -144,7 +144,8 @@
       (NEWIN-P (CREATE-HEX-WINDOW FILE NEWIN-P))
       (T (PRINT-HEXDUMP FILE))))
 
-(DEFUN NEXT-HEX-PAGE (WINDOW)                          (IL:* IL:\; "Edited 31-May-2024 10:34 by PA")
+(DEFUN NEXT-HEX-PAGE (WINDOW)                          (IL:* IL:\; "Edited  9-Nov-2025 13:50 by PA")
+                                                       (IL:* IL:\; "Edited 31-May-2024 10:34 by PA")
                                                        (IL:* IL:\; "Edited 20-May-2024 08:07 by PA")
    "Display in WINDOW the next page of the hex dump."
    (LET* ((INSTREAM (IL:WINDOWPROP WINDOW 'INSTREAM))
@@ -164,9 +165,15 @@
              (IL:TEXTPROP OUTSTREAM 'IL:READONLY NIL)
              (CLEAR-HEX-WINDOW WINDOW)
              (IL:TEDIT.INSERT OUTSTREAM PAGE)
+
+             (IL:* IL:|;;| "Mark text unchanged so the user is not prompted to save")
+
              (IL:TEDIT.STREAMCHANGEDP OUTSTREAM T)
              (IL:TEDIT.PROMPTPRINT OUTSTREAM "" T)
-             (IL:TEXTPROP OUTSTREAM 'IL:READONLY T))))
+
+             (IL:* IL:|;;| "Set window to read-only with no warnings for attempted changes")
+
+             (IL:TEXTPROP OUTSTREAM 'IL:READONLY 'IL:QUIET))))
 
 (DEFUN PRINT-HEX-BLOCK (IN OFFSET &OPTIONAL (OUT *STANDARD-OUTPUT*))
                                                        (IL:* IL:\; "Edited 20-May-2024 10:21 by PA")
@@ -251,10 +258,10 @@ Returns NIL if no more bytes are available for reading, the last read byte other
           (RPLACD (LAST FB.SEE.SUBITEMS)
                  (LIST (IL:COPY FB-HEXDUMP-SEE-SUBITEM)))))
 (IL:DECLARE\: IL:DONTCOPY
-  (IL:FILEMAP (NIL (2287 2559 (CLEAR-HEX-WINDOW 2287 . 2559)) (2561 2821 (CODE-TO-ASCII 2561 . 2821)) (
-2823 4824 (CREATE-HEX-WINDOW 2823 . 4824)) (4826 5246 (DEACTIVATE-HEX-WINDOW 4826 . 5246)) (5248 6042 
-(FB-HEXDUMP 5248 . 6042)) (6044 6669 (HANDLE-MENU 6044 . 6669)) (6671 7786 (HEXDUMP 6671 . 7786)) (
-7788 9293 (NEXT-HEX-PAGE 7788 . 9293)) (9295 10663 (PRINT-HEX-BLOCK 9295 . 10663)) (10665 11298 (
-PRINT-HEXDUMP 10665 . 11298)) (11300 11882 (QUIT-HEX-WINDOW 11300 . 11882)) (11884 12391 (
-RESET-HEX-WINDOW 11884 . 12391)))))
+  (IL:FILEMAP (NIL (2275 2547 (CLEAR-HEX-WINDOW 2275 . 2547)) (2549 2809 (CODE-TO-ASCII 2549 . 2809)) (
+2811 4812 (CREATE-HEX-WINDOW 2811 . 4812)) (4814 5234 (DEACTIVATE-HEX-WINDOW 4814 . 5234)) (5236 6030 
+(FB-HEXDUMP 5236 . 6030)) (6032 6657 (HANDLE-MENU 6032 . 6657)) (6659 7774 (HEXDUMP 6659 . 7774)) (
+7776 9589 (NEXT-HEX-PAGE 7776 . 9589)) (9591 10959 (PRINT-HEX-BLOCK 9591 . 10959)) (10961 11594 (
+PRINT-HEXDUMP 10961 . 11594)) (11596 12178 (QUIT-HEX-WINDOW 11596 . 12178)) (12180 12687 (
+RESET-HEX-WINDOW 12180 . 12687)))))
 IL:STOP
