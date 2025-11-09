@@ -1,12 +1,12 @@
 (DEFINE-FILE-INFO PACKAGE (DEFPACKAGE "INSPHEX" (USE "LISP" "XCL")) READTABLE "XCL" BASE 10)
 
-(IL:FILECREATED "28-Jun-2024 10:40:25" IL:|{DSK}<home>matt>Interlisp>insphex>INSPHEX.;3| 13275  
+(IL:FILECREATED " 9-Nov-2025 10:46:29" IL:|{DSK}<home>paolo>il>insphex>INSPHEX.;2| 13833  
 
-      :EDIT-BY "mth"
+      :EDIT-BY "PA"
 
-      :CHANGES-TO (IL:VARS IL:INSPHEXCOMS)
+      :CHANGES-TO (IL:FUNCTIONS CREATE-HEX-WINDOW HEXDUMP)
 
-      :PREVIOUS-DATE "28-Jun-2024 01:58:30" IL:|{DSK}<home>matt>Interlisp>insphex>INSPHEX.;1|)
+      :PREVIOUS-DATE "28-Jun-2024 10:40:25" IL:|{DSK}<home>paolo>il>insphex>INSPHEX.;1|)
 
 
 (IL:PRETTYCOMPRINT IL:INSPHEXCOMS)
@@ -62,11 +62,13 @@
        #\.
        (CODE-CHAR CODE)))
 
-(DEFUN CREATE-HEX-WINDOW (FILE)                        (IL:* IL:\; "Edited  2-Jun-2024 09:44 by PA")
+(DEFUN CREATE-HEX-WINDOW (FILE &OPTIONAL (WINORNIL NIL))
+                                                       (IL:* IL:\; "Edited  9-Nov-2025 10:38 by PA")
+                                                       (IL:* IL:\; "Edited  2-Jun-2024 09:44 by PA")
                                                        (IL:* IL:\; "Edited 20-May-2024 08:37 by PA")
                                                        (IL:* IL:\; "Edited 18-May-2024 09:40 by PA")
                                                        (IL:* IL:\; "Edited 12-May-2024 06:04 by PA")
-   "Create and return a window to display the hex dump of FILE."
+   "Create and return a window to display the hex dump of FILE. If WINORNIL is a window use it for TEdit, otherwise let the user swipe out a rectangle."
    (LET* ((IN (OPEN FILE :DIRECTION :INPUT :ELEMENT-TYPE '(UNSIGNED-BYTE 8)))
           (COMMANDS (IL:MENUWINDOW (MAKE-MENU :ITEMS '(("Next" :NEXT "Show the next page.")
                                                        ("Reread" :REREAD "Reread the input file.")
@@ -76,7 +78,9 @@
                                           :TITLE "Commands" :CENTERFLG T :WHENSELECTEDFN 
                                           #'HANDLE-MENU)))
           (OUT (IL:OPENTEXTSTREAM))
-          (TEDIT-PROC (IL:TEDIT OUT NIL NIL '(IL:QUITFN #'QUIT-HEX-WINDOW)))
+          (TEDIT-PROC (IL:TEDIT OUT (IL:WINDOWP WINORNIL)
+                             NIL
+                             '(IL:QUITFN #'QUIT-HEX-WINDOW)))
           (WINDOW (IL:WFROMDS OUT)))
          (IL:ATTACHWINDOW COMMANDS WINDOW 'IL:TOP 'IL:LEFT)
          (IL:WINDOWPROP WINDOW 'INSTREAM IN)
@@ -126,17 +130,18 @@
                     (NEXT-HEX-PAGE HEX-WINDOW))
                  (:EXIT (QUIT-HEX-WINDOW HEX-WINDOW))))))
 
-(DEFUN HEXDUMP (FILE &OPTIONAL NEWIN-P)                (IL:* IL:\; "Edited 11-May-2024 09:34 by PA")
+(DEFUN HEXDUMP (FILE &OPTIONAL NEWIN-P)                (IL:* IL:\; "Edited  9-Nov-2025 10:34 by PA")
+                                                       (IL:* IL:\; "Edited 11-May-2024 09:34 by PA")
                                                        (IL:* IL:\; "Edited 10-May-2024 04:41 by PA")
                                                        (IL:* IL:\; "Edited  6-May-2024 12:44 by PA")
                                                        (IL:* IL:\; "Edited  3-May-2024 10:23 by PA")
                                                        (IL:* IL:\; "Edited 30-Apr-2024 12:24 by PA")
                                                        (IL:* IL:\; "Edited  5-Mar-2024 09:13 by PA")
-   "Show the contents of FILE in hex and ASCII."
+   "Show the contents of FILE in hex and ASCII. If NEWIN-P is a window use it for the hex dump window, otherwise let the user swipe out a rectangle if NIL."
    (COND
       ((NOT (PROBE-FILE FILE))
        (FORMAT *ERROR-OUTPUT* "~&File ~A not found.~%" FILE))
-      (NEWIN-P (CREATE-HEX-WINDOW FILE))
+      (NEWIN-P (CREATE-HEX-WINDOW FILE NEWIN-P))
       (T (PRINT-HEXDUMP FILE))))
 
 (DEFUN NEXT-HEX-PAGE (WINDOW)                          (IL:* IL:\; "Edited 31-May-2024 10:34 by PA")
@@ -246,10 +251,10 @@ Returns NIL if no more bytes are available for reading, the last read byte other
           (RPLACD (LAST FB.SEE.SUBITEMS)
                  (LIST (IL:COPY FB-HEXDUMP-SEE-SUBITEM)))))
 (IL:DECLARE\: IL:DONTCOPY
-  (IL:FILEMAP (NIL (2284 2556 (CLEAR-HEX-WINDOW 2284 . 2556)) (2558 2818 (CODE-TO-ASCII 2558 . 2818)) (
-2820 4491 (CREATE-HEX-WINDOW 2820 . 4491)) (4493 4913 (DEACTIVATE-HEX-WINDOW 4493 . 4913)) (4915 5709 
-(FB-HEXDUMP 4915 . 5709)) (5711 6336 (HANDLE-MENU 5711 . 6336)) (6338 7228 (HEXDUMP 6338 . 7228)) (
-7230 8735 (NEXT-HEX-PAGE 7230 . 8735)) (8737 10105 (PRINT-HEX-BLOCK 8737 . 10105)) (10107 10740 (
-PRINT-HEXDUMP 10107 . 10740)) (10742 11324 (QUIT-HEX-WINDOW 10742 . 11324)) (11326 11833 (
-RESET-HEX-WINDOW 11326 . 11833)))))
+  (IL:FILEMAP (NIL (2287 2559 (CLEAR-HEX-WINDOW 2287 . 2559)) (2561 2821 (CODE-TO-ASCII 2561 . 2821)) (
+2823 4824 (CREATE-HEX-WINDOW 2823 . 4824)) (4826 5246 (DEACTIVATE-HEX-WINDOW 4826 . 5246)) (5248 6042 
+(FB-HEXDUMP 5248 . 6042)) (6044 6669 (HANDLE-MENU 6044 . 6669)) (6671 7786 (HEXDUMP 6671 . 7786)) (
+7788 9293 (NEXT-HEX-PAGE 7788 . 9293)) (9295 10663 (PRINT-HEX-BLOCK 9295 . 10663)) (10665 11298 (
+PRINT-HEXDUMP 10665 . 11298)) (11300 11882 (QUIT-HEX-WINDOW 11300 . 11882)) (11884 12391 (
+RESET-HEX-WINDOW 11884 . 12391)))))
 IL:STOP
