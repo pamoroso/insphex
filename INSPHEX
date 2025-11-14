@@ -1,12 +1,12 @@
 (DEFINE-FILE-INFO PACKAGE (DEFPACKAGE "INSPHEX" (USE "LISP" "XCL")) READTABLE "XCL" BASE 10)
 
-(IL:FILECREATED "11-Nov-2025 13:39:11" IL:|{DSK}<home>paolo>il>insphex>INSPHEX.;7| 14235  
+(IL:FILECREATED "14-Nov-2025 09:56:28" IL:|{DSK}<home>paolo>il>insphex>INSPHEX.;8| 14385  
 
       :EDIT-BY "PA"
 
-      :CHANGES-TO (IL:VARS IL:INSPHEXCOMS)
+      :CHANGES-TO (IL:FUNCTIONS CREATE-HEX-WINDOW)
 
-      :PREVIOUS-DATE " 9-Nov-2025 18:02:54" IL:|{DSK}<home>paolo>il>insphex>INSPHEX.;6|)
+      :PREVIOUS-DATE "11-Nov-2025 13:39:11" IL:|{DSK}<home>paolo>il>insphex>INSPHEX.;7|)
 
 
 (IL:PRETTYCOMPRINT IL:INSPHEXCOMS)
@@ -63,6 +63,7 @@
        (CODE-CHAR CODE)))
 
 (DEFUN CREATE-HEX-WINDOW (FILE &OPTIONAL (WINORNIL NIL))
+                                                       (IL:* IL:\; "Edited 14-Nov-2025 09:55 by PA")
                                                        (IL:* IL:\; "Edited  9-Nov-2025 18:01 by PA")
                                                        (IL:* IL:\; "Edited  2-Jun-2024 09:44 by PA")
                                                        (IL:* IL:\; "Edited 20-May-2024 08:37 by PA")
@@ -77,7 +78,7 @@
                                           '(IL:MODERN 12)
                                           :TITLE "Commands" :CENTERFLG T :WHENSELECTEDFN 
                                           #'HANDLE-MENU)))
-          (OUT (IL:OPENTEXTSTREAM))
+          (OUT (IL:OPENTEXTSTREAM NIL NIL '(IL:FONT (TERMINAL 12))))
           (WINDOW (OR (IL:WINDOWP WINORNIL)
                       (IL:CREATEW))))
 
@@ -261,10 +262,10 @@ Returns NIL if no more bytes are available for reading, the last read byte other
           (RPLACD (LAST FB.SEE.SUBITEMS)
                  (LIST (IL:COPY FB-HEXDUMP-SEE-SUBITEM)))))
 (IL:DECLARE\: IL:DONTCOPY
-  (IL:FILEMAP (NIL (2280 2552 (CLEAR-HEX-WINDOW 2280 . 2552)) (2554 2814 (CODE-TO-ASCII 2554 . 2814)) (
-2816 4909 (CREATE-HEX-WINDOW 2816 . 4909)) (4911 5331 (DEACTIVATE-HEX-WINDOW 4911 . 5331)) (5333 6127 
-(FB-HEXDUMP 5333 . 6127)) (6129 6754 (HANDLE-MENU 6129 . 6754)) (6756 7871 (HEXDUMP 6756 . 7871)) (
-7873 9686 (NEXT-HEX-PAGE 7873 . 9686)) (9688 11056 (PRINT-HEX-BLOCK 9688 . 11056)) (11058 11691 (
-PRINT-HEXDUMP 11058 . 11691)) (11693 12275 (QUIT-HEX-WINDOW 11693 . 12275)) (12277 12784 (
-RESET-HEX-WINDOW 12277 . 12784)))))
+  (IL:FILEMAP (NIL (2288 2560 (CLEAR-HEX-WINDOW 2288 . 2560)) (2562 2822 (CODE-TO-ASCII 2562 . 2822)) (
+2824 5059 (CREATE-HEX-WINDOW 2824 . 5059)) (5061 5481 (DEACTIVATE-HEX-WINDOW 5061 . 5481)) (5483 6277 
+(FB-HEXDUMP 5483 . 6277)) (6279 6904 (HANDLE-MENU 6279 . 6904)) (6906 8021 (HEXDUMP 6906 . 8021)) (
+8023 9836 (NEXT-HEX-PAGE 8023 . 9836)) (9838 11206 (PRINT-HEX-BLOCK 9838 . 11206)) (11208 11841 (
+PRINT-HEXDUMP 11208 . 11841)) (11843 12425 (QUIT-HEX-WINDOW 11843 . 12425)) (12427 12934 (
+RESET-HEX-WINDOW 12427 . 12934)))))
 IL:STOP
